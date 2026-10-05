@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Graphic Ink</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="stage"></canvas>
+  <div id="drop" aria-hidden="true"><span>Drop image or video</span></div>
+
+  <aside class="panel" id="panel">
+    <button class="panel-head" id="toggle" aria-expanded="true" aria-controls="panel-body" aria-label="Menu options" title="Toggle controls (H)">
+      <span>Menu Options</span>
+      <span class="chev" aria-hidden="true"></span>
+    </button>
+
+    <div class="panel-wrap" id="panel-body">
+      <div class="panel-body">
+        <section>
+          <h2>Source</h2>
+          <label class="btn" for="file">Upload image or video</label>
+          <input type="file" id="file" accept="image/*,video/*" hidden>
+          <p class="meta" id="source-name">Demo animation</p>
+          <div class="row">
+            <button class="btn small" id="demo">Demo</button>
+            <button class="btn small" id="playpause" hidden>Pause</button>
+            <select id="fit" aria-label="Fit">
+              <option value="cover">Cover</option>
+              <option value="contain">Contain</option>
+            </select>
+          </div>
+        </section>
+
+        <section>
+          <h2>Pattern</h2>
+          <div class="seg" id="mode" role="group" aria-label="Pattern">
+            <button data-mode="lines" aria-pressed="true">Lines</button>
+            <button data-mode="dots" aria-pressed="false">Dots</button>
+            <button data-mode="dither" aria-pressed="false">Dither</button>
+          </div>
+          <div id="sliders-lines"></div>
+        </section>
+
+        <section>
+          <h2>Wave</h2>
+          <div id="sliders-wave"></div>
+        </section>
+
+        <section>
+          <h2>Tone</h2>
+          <div id="sliders-tone"></div>
+          <label class="check"><input type="checkbox" id="invert"> Invert tone</label>
+        </section>
+
+        <section>
+          <h2>Colour</h2>
+          <div class="swatches" id="swatches"></div>
+          <div class="row colours">
+            <label>Ink <input type="color" id="ink"></label>
+            <label>Paper <input type="color" id="paper"></label>
+            <button class="btn small" id="swap">Swap</button>
+          </div>
+        </section>
+
+        <section>
+          <h2>Export</h2>
+          <button class="btn" id="record">Record video</button>
+          <button class="btn outline" id="export">Save PNG</button>
+        </section>
+      </div>
+    </div>
+  </aside>
+
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+:root {
+  --ink: #111111;
+  --paper: #f2efe6;
+  --line: color-mix(in srgb, var(--ink) 22%, transparent);
+  font: 12px/1.4 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+#stage {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#drop {
+  position: fixed;
+  inset: 12px;
+  display: none;
+  place-items: center;
+  border: 2px dashed var(--ink);
+  background: color-mix(in srgb, var(--paper) 80%, transparent);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+body.dragging #drop { display: grid; }
+
+/* Panel */
+.panel {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 280px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  overflow: hidden;
+  transition: width 0.25s ease, box-shadow 0.25s ease;
+}
+
+.panel-head {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 34px;
+  flex: none;
+  padding: 0 12px;
+  white-space: nowrap;
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.panel-head:focus-visible { outline: 2px solid var(--ink); outline-offset: -4px; }
+
+/* Close "X" while expanded. */
+.chev { position: relative; width: 12px; height: 12px; }
+.chev::before,
+.chev::after {
+  content: "";
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  top: calc(50% - 0.75px);
+  height: 1.5px;
+  background: var(--ink);
+  transform: rotate(45deg);
+}
+.chev::after { transform: rotate(-45deg); }
+/* Collapsed: shrink to a small menu-icon button so the graphic stays clear. */
+.panel.collapsed { width: 36px; box-shadow: 2px 2px 0 var(--ink); }
+/* Icon stays pinned to the right edge so it doesn't jump while the width shrinks. */
+.panel.collapsed .panel-head { padding: 0 10px; justify-content: flex-end; }
+.panel.collapsed .panel-head span:first-child { display: none; }
+.panel.collapsed .chev {
+  width: 14px;
+  height: 1.5px;
+  border: 0;
+  background: var(--ink);
+  box-shadow: 0 -5px 0 var(--ink), 0 5px 0 var(--ink);
+}
+.panel.collapsed .chev::before,
+.panel.collapsed .chev::after { display: none; }
+
+.panel-wrap {
+  display: grid;
+  grid-template-rows: 1fr;
+  min-height: 0;
+  transition: grid-template-rows 0.25s ease;
+}
+.panel.collapsed .panel-wrap { grid-template-rows: 0fr; }
+.panel.collapsed .panel-body { visibility: hidden; }
+
+.panel-body {
+  /* Fixed width so the controls are clipped, not reflowed, as the panel narrows. */
+  width: min(278px, calc(100vw - 34px));
+  min-height: 0;
+  overflow-y: auto;
+  transition: visibility 0.25s;
+}
+
+section {
+  padding: 12px;
+  border-top: 1px solid var(--line);
+}
+
+h2 {
+  margin: 0 0 8px;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.meta {
+  margin: 6px 0 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.7;
+}
+
+.row { display: flex; gap: 6px; align-items: center; }
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  font: inherit;
+  text-align: center;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.btn:hover { opacity: 0.85; }
+.btn.outline { margin-top: 6px; background: transparent; color: var(--ink); }
+.btn.recording::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: blink 1s steps(2, start) infinite;
+}
+@keyframes blink { to { visibility: hidden; } }
+.btn.small {
+  width: auto;
+  padding: 5px 8px;
+  background: transparent;
+  color: var(--ink);
+}
+.btn.small:hover { background: var(--ink); color: var(--paper); opacity: 1; }
+
+.seg { display: flex; margin-bottom: 12px; border: 1px solid var(--ink); }
+.seg button {
+  flex: 1;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.seg button + button { border-left: 1px solid var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+
+select {
+  margin-left: auto;
+  padding: 5px 6px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+}
+
+/* Sliders */
+.slider {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 8px;
+  margin-bottom: 8px;
+}
+.slider:last-child { margin-bottom: 0; }
+.slider output { font-variant-numeric: tabular-nums; opacity: 0.7; }
+.slider input { grid-column: 1 / -1; }
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 14px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-runnable-track { height: 1px; background: var(--ink); }
+input[type="range"]::-moz-range-track { height: 1px; background: var(--ink); }
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 8px;
+  height: 14px;
+  margin-top: -7px;
+  background: var(--ink);
+  border: 0;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 8px;
+  height: 14px;
+  background: var(--ink);
+  border: 0;
+  border-radius: 0;
+}
+
+.check { display: flex; align-items: center; gap: 6px; margin-top: 10px; cursor: pointer; }
+.check input { accent-color: var(--ink); margin: 0; }
+
+/* Colour */
+.swatches { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 10px; }
+.swatch {
+  aspect-ratio: 1;
+  padding: 0;
+  border: 1px solid var(--ink);
+  cursor: pointer;
+}
+.swatch[aria-pressed="true"] { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.colours label { display: flex; align-items: center; gap: 6px; }
+.colours .btn { margin-left: auto; }
+input[type="color"] {
+  width: 26px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--ink);
+  background: none;
+  cursor: pointer;
+}
+input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+input[type="color"]::-webkit-color-swatch { border: 0; }
